@@ -6,7 +6,7 @@ Author URI: http://www.wcvendors.com/
 Plugin URI: http://www.wcvendors.com/
 Requires at least: 4.0
 Tested up to: 4.0
-Stable tag: 1.1.5
+Stable tag: 1.2.0
 License: GPLv2 or later
 
 The free multi-vendor plugin for WooCommerce.  Now you can allow anyone to open a store on your site!
@@ -46,7 +46,7 @@ You can post a support question on the support tab, however you'll get more help
 == Screenshots ==
 
 1. General options - Configure default commission, how members can register and more.
-2. Product options pag - allows you to hide specific options on the add new product window from vendors. 
+2. Product options page - allows you to hide specific options on the add new product window from vendors. 
 3. Capabilities options - restrict what your vendors can see and do. 
 4. Pages options - configure what pages will load the relevant vendor templates. These can be customised. 
 5. User paypment info - define how your vendors get paid and when. 
@@ -57,18 +57,32 @@ You can post a support question on the support tab, however you'll get more help
 No Upgrade required at this time.
 
 == Changelog ==
-## October 29, 2014 ##
-* version 1.1.5
+
+## Version 1.2.0  - November 14, 2014 ##
+ 
+* Added new filters to change sold by text see Knowledge base for details
+* Added sold by to product loop for archive-product.php, see knowledge base on how to disable or change this
+* Added new option to hide "Featured product" from vendors
+* Added Sold By Filter as per #3
+* Removing unused tag filter
+* Updated default.pot 
+* Fixing attribute bug #48 - Thanks to gcskye
+* Removing legacy translations
+* Fixed Orders view errors
+* Fixing call to incorrect method #45
+
+## Version 1.1.5 - October 29, 2014 ##
+
 * Fixed orders view to remove incorrect call to woocommerce print messages
 
-## October 14, 2014 ##
-* version 1.1.4 (First release on WordPress.org)
+## version 1.1.4 (First release on WordPress.org) - October 14, 2014 ##
+
 * Resolved shipping bug
 * Commission totals are now properly displayed on the WooCommerce / WC Vendors / Payments tab
 * Number of internal bug fixes
 
-## August 09, 2014 ##
-* version 1.1.3 (Initial Public Release)
+## Version 1.1.3 (Initial Public Release) - August 09, 2014 ##
+
 * Numerous bug fixes
 * New Shortcodes:  These new shortcodes are based on the WooCommerce included shortcodes.  They have been modified to show output based on the vendor you specify.  All other arguments to the shortcodes from WooCommerce will also work on these shortcodes.
 
