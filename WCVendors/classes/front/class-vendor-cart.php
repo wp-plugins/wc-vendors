@@ -38,7 +38,7 @@ class WCV_Vendor_Cart
 			: get_bloginfo( 'name' );
 
 		$values[ ] = array(
-			'name'    => __( 'Sold by', 'wcvendors' ),
+			'name'    => apply_filters('wcvendors_cart_sold_by', __( 'Sold by', 'wcvendors' )),
 			'display' => $sold_by,
 		);
 
@@ -54,10 +54,10 @@ class WCV_Vendor_Cart
 		$author_id = get_the_author_meta( 'ID' );
 
 		$sold_by = WCV_Vendors::is_vendor( $author_id )
-			? sprintf( '<a href="%s" target="_TOP">%s</a>', WCV_Vendors::get_vendor_shop_page( $author_id ), WCV_Vendors::get_vendor_shop_name( $author_id ) )
+			? sprintf( '<a href="%s">%s</a>', WCV_Vendors::get_vendor_shop_page( $author_id ), WCV_Vendors::get_vendor_shop_name( $author_id ) )
 			: get_bloginfo( 'name' );
 
-		echo __( 'Sold by', 'wcvendors' ) . ': ' . $sold_by . '<br/>';
+		echo apply_filters('wcvendors_cart_sold_by_meta', __( 'Sold by: ', 'wcvendors' )) . $sold_by . '<br/>';
 	}
 
 }

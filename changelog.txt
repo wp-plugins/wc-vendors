@@ -1,5 +1,18 @@
 Changelog for WC Vendors
 
+Version 1.2.0
+
+* Added new filters to change sold by text see Knowledge base for details
+* Added sold by to product loop for archive-product.php, see knowledge base on how to disable or change this
+* Added new option to hide "Featured product" from vendors
+* Added Sold By Filter as per #3
+* Removing unused tag filter
+* Updated default.pot 
+* Fixing attribute bug #48 - Thanks to gcskye
+* Removing legacy translations
+* Fixed Orders view errors
+* Fixing call to incorrect method #45
+
 Version 1.1.5
 
 * Fixed orders view to remove incorrect call to woocommerce print messages
