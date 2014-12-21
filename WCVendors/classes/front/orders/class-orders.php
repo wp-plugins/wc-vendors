@@ -98,7 +98,7 @@ class WCV_Orders
 	{
 		if ( !WCV_Vendors::is_vendor( get_current_user_id() ) ) {
 			ob_start();
-			woocommerce_get_template( 'denied.php', array(), 'wc-product-vendor/dashboard/', wcv_plugin_dir . 'views/dashboard/' );
+			wc_get_template( 'denied.php', array(), 'wc-product-vendor/dashboard/', wcv_plugin_dir . 'views/dashboard/' );
 
 			return ob_get_clean();
 		}
@@ -145,7 +145,7 @@ class WCV_Orders
 				woocommerce_add_order_item_meta( 2048, __( 'Tracking number', 'wcvendors' ), $tracking_number );
 
 				$message = __( 'Success. Your tracking number has been updated.', 'wcvendors' );
-				if ( function_exists( 'wc_add_message' ) ) wc_add_message( $message ); else $woocommerce->add_message( $message );
+				wc_add_notice( $message, 'success' );
 
 				// Update order data
 				update_post_meta( $order_id, '_tracking_provider', $tracking_provider );
@@ -160,7 +160,7 @@ class WCV_Orders
 		$headers = WCV_Orders::get_headers();
 		$all     = WCV_Orders::format_order_details( $this->orders, $this->product_id );
 
-		wp_enqueue_style( 'pv_frontend_style', wcv_assets_url . 'css/pv-frontend.css' );
+		wp_enqueue_style( 'pv_frontend_style', wcv_assets_url . 'css/wcv-frontend.css' );
 		wp_enqueue_script( 'pv_frontend_script', wcv_assets_url . 'js/front-orders.js' );
 
 		// WC Shipment Tracking Providers
@@ -181,10 +181,10 @@ class WCV_Orders
 		ob_start();
 		// Show the Export CSV button
 		if ( $this->can_export_csv ) {
-			woocommerce_get_template( 'csv-export.php', array(), 'wc-product-vendor/orders/', wcv_plugin_dir . 'views/orders/' );
+			wc_get_template( 'csv-export.php', array(), 'wc-product-vendor/orders/', wcv_plugin_dir . 'views/orders/' );
 		}
 
-		woocommerce_get_template( 'orders.php', array(
+		wc_get_template( 'orders.php', array(
 													 'headers'        => $headers,
 													 'body'           => $all[ 'body' ],
 													 'items'          => $all[ 'items' ],

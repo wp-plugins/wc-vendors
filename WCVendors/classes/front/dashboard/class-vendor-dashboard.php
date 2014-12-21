@@ -18,10 +18,7 @@ class WCV_Vendor_Dashboard
 	function __construct()
 	{
 		add_shortcode( 'wcv_shop_settings', array( $this, 'display_vendor_settings' ) );
-
-		if ( $can_view_sales = WC_Vendors::$pv_options->get_option( 'can_view_frontend_reports' ) ) {
-			add_shortcode( 'wcv_vendor_dashboard', array( $this, 'display_vendor_products' ) );
-		}
+		add_shortcode( 'wcv_vendor_dashboard', array( $this, 'display_vendor_products' ) );
 
 		add_action( 'template_redirect', array( $this, 'check_access' ) );
 		add_action( 'init', array( $this, 'save_vendor_settings' ) );
@@ -41,7 +38,7 @@ class WCV_Vendor_Dashboard
 				foreach ($shippers as $key => $value) {
 					if ( $value == $user_id ) {
 						unset($shippers[$key]);
-						if ( function_exists( 'wc_add_error' ) ) wc_add_error( __( 'Order unmarked shipped.', 'wcvendors' ) ); else $woocommerce->add_error( __( 'Order unmarked shipped.', 'wcvendors' ) );
+						wc_add_notice( __( 'Order unmarked shipped.', 'wcvendors' ), 'success');
 						break;
 					}
 				}
@@ -51,7 +48,7 @@ class WCV_Vendor_Dashboard
 				if ( !empty( $mails ) ) {
 					$mails[ 'WC_Email_Notify_Shipped' ]->trigger( $order_id, $user_id );
 				}
-				if ( function_exists( 'wc_add_message' ) ) wc_add_message( __( 'Order marked shipped.', 'wcvendors' ) ); else $woocommerce->add_message( __( 'Order marked shipped.', 'wcvendors' ) );
+				wc_add_notice( __( 'Order marked shipped.', 'wcvendors' ), 'success' );
 			}
 
 			update_post_meta( $order_id, 'wc_pv_shipped', $shippers );
@@ -69,7 +66,7 @@ class WCV_Vendor_Dashboard
 
 		if ( isset( $_POST[ 'pv_paypal' ] ) ) {
 			if ( !is_email( $_POST[ 'pv_paypal' ] ) ) {
-				if ( function_exists( 'wc_add_error' ) ) wc_add_error( __( 'Your PayPal address is not a valid email address.', 'wcvendors' ) ); else $woocommerce->add_error( __( 'Your PayPal address is not a valid email address.', 'wcvendors' ) );
+				wc_add_notice( __( 'Your PayPal address is not a valid email address.', 'wcvendors' ), 'error' );
 			} else {
 				update_user_meta( $user_id, 'pv_paypal', $_POST[ 'pv_paypal' ] );
 			}
@@ -78,7 +75,7 @@ class WCV_Vendor_Dashboard
 		if ( !empty( $_POST[ 'pv_shop_name' ] ) ) {
 			$users = get_users( array( 'meta_key' => 'pv_shop_slug', 'meta_value' => sanitize_title( $_POST[ 'pv_shop_name' ] ) ) );
 			if ( !empty( $users ) && $users[ 0 ]->ID != $user_id ) {
-				if ( function_exists( 'wc_add_error' ) ) wc_add_error( __( 'That shop name is already taken. Your shop name must be unique.', 'wcvendors' ) ); else $woocommerce->add_error( __( 'That shop name is already taken. Your shop name must be unique.', 'wcvendors' ) );
+				wc_add_notice( __( 'That shop name is already taken. Your shop name must be unique.', 'wcvendors' ), 'error' ); 
 			} else {
 				update_user_meta( $user_id, 'pv_shop_name', $_POST[ 'pv_shop_name' ] );
 				update_user_meta( $user_id, 'pv_shop_slug', sanitize_title( $_POST[ 'pv_shop_name' ] ) );
@@ -96,7 +93,7 @@ class WCV_Vendor_Dashboard
 		do_action( 'wcvendors_shop_settings_saved', $user_id );
 
 		if ( !wc_notice_count() ) {
-			if ( function_exists( 'wc_add_message' ) ) wc_add_message( __( 'Settings saved.', 'wcvendors' ) ); else wc_add_notice( __( 'Settings saved.', 'wcvendors' ) );
+			wc_add_notice( __( 'Settings saved.', 'wcvendors' ), 'success' );
 		}
 	}
 
@@ -154,20 +151,22 @@ class WCV_Vendor_Dashboard
 		$order_summary   = WCV_Queries::get_orders_for_products( $products );
 		$shop_page       = WCV_Vendors::get_vendor_shop_page( wp_get_current_user()->user_login );
 
-		wp_enqueue_style( 'pv_frontend_style', wcv_assets_url . 'css/pv-frontend.css' );
+		wp_enqueue_style( 'pv_frontend_style', wcv_assets_url . 'css/wcv-frontend.css' );
 
 		ob_start();
 		do_action( 'wcvendors_before_dashboard' );
 
 		wc_print_notices();
-		woocommerce_get_template( 'links.php', array(
+		wc_get_template( 'links.php', array(
 													'shop_page'     => urldecode($shop_page),
 													'settings_page' => $settings_page,
 													'can_submit'    => $can_submit,
 													'submit_link'   => $submit_link,
 											   ), 'wc-product-vendor/dashboard/', wcv_plugin_dir . 'views/dashboard/' );
 
-		woocommerce_get_template( 'reports.php', array(
+		if ( $can_view_sales = WC_Vendors::$pv_options->get_option( 'can_view_frontend_reports' ) ) {
+
+		wc_get_template( 'reports.php', array(
 													  'start_date'      => $start_date,
 													  'end_date'        => $end_date,
 													  'vendor_products' => $vendor_products,
@@ -175,8 +174,8 @@ class WCV_Vendor_Dashboard
 													  'datepicker'      => $datepicker,
 													  'can_view_orders' => $can_view_orders,
 												 ), 'wc-product-vendor/dashboard/', wcv_plugin_dir . 'views/dashboard/' );
-
-		woocommerce_get_template( 'orders.php', array(
+		}
+		wc_get_template( 'orders.php', array(
 													  'start_date'      => $start_date,
 													  'end_date'        => $end_date,
 													  'vendor_products' => $vendor_products,
@@ -218,7 +217,7 @@ class WCV_Vendor_Dashboard
 		$global_html = WC_Vendors::$pv_options->get_option( 'shop_html_enabled' );
 
 		ob_start();
-		woocommerce_get_template( 'settings.php', array(
+		wc_get_template( 'settings.php', array(
 													   'description'      => $description,
 													   'global_html'      => $global_html,
 													   'has_html'         => $has_html,
@@ -246,7 +245,7 @@ class WCV_Vendor_Dashboard
 
 		} else if ( !WCV_Vendors::is_vendor( get_current_user_id() ) ) {
 
-			woocommerce_get_template( 'denied.php', array(), 'wc-product-vendor/dashboard/', wcv_plugin_dir . 'views/dashboard/' );
+			wc_get_template( 'denied.php', array(), 'wc-product-vendor/dashboard/', wcv_plugin_dir . 'views/dashboard/' );
 
 			return false;
 
