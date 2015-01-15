@@ -7,7 +7,7 @@
  * Author:              WC Vendors
  * Author URI:          http://wcvendors.com
  *
- * Version:             1.3.1
+ * Version:             1.4.0
  * Requires at least:   4.0.0
  * Tested up to:        4.1.0
  *
@@ -147,6 +147,10 @@ if ( is_woocommerce_activated() ) {
 			require_once wcv_plugin_dir . 'classes/admin/class-admin-users.php';
 			require_once wcv_plugin_dir . 'classes/admin/class-admin-page.php';
 			require_once wcv_plugin_dir . 'classes/includes/class-wcv-shortcodes.php';
+
+			if ( !function_exists( 'woocommerce_wp_text_input' ) && !is_admin() ) {
+				include_once(WC()->plugin_path() . '/includes/admin/wc-meta-box-functions.php');
+			}
 
 			new WCV_Vendor_Shop;
 			new WCV_Vendor_Cart;
