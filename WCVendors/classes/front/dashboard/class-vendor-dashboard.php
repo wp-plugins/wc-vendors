@@ -38,7 +38,8 @@ class WCV_Vendor_Dashboard
 				foreach ($shippers as $key => $value) {
 					if ( $value == $user_id ) {
 						unset($shippers[$key]);
-						wc_add_notice( __( 'Order unmarked shipped.', 'wcvendors' ), 'success');
++						do_action('wcvendors_vendor_unship', $order_id, $user_id);
+						wc_add_notice( __( 'Order unmarked shipped.  <br><br>Caution:  Clicking Reload in your browser will mark the order as shipped and email the buyer again, potentially spamming them.', 'wcvendors' ), 'success');
 						break;
 					}
 				}
@@ -48,7 +49,8 @@ class WCV_Vendor_Dashboard
 				if ( !empty( $mails ) ) {
 					$mails[ 'WC_Email_Notify_Shipped' ]->trigger( $order_id, $user_id );
 				}
-				wc_add_notice( __( 'Order marked shipped.', 'wcvendors' ), 'success' );
++				do_action('wcvendors_vendor_ship', $order_id, $user_id);
+				wc_add_notice( __( 'Order marked shipped.  <br><br>Caution:  Clicking Reload in your browser will unmark the order as shipped.', 'wcvendors' ), 'success' );
 			}
 
 			update_post_meta( $order_id, 'wc_pv_shipped', $shippers );
@@ -74,8 +76,8 @@ class WCV_Vendor_Dashboard
 				}
 			}
 			if ( $order_item_id ) {
-				woocommerce_delete_order_item_meta( 2048, __( 'Tracking number', 'wcvendors' ) );
-				woocommerce_add_order_item_meta( 2048, __( 'Tracking number', 'wcvendors' ), $tracking_number );
+				woocommerce_delete_order_item_meta( $order_item_id, __( 'Tracking number', 'wcvendors' ) );
+				woocommerce_add_order_item_meta( $order_item_id, __( 'Tracking number', 'wcvendors' ), $tracking_number );
 
 				$message = __( 'Success. Your tracking number has been updated.', 'wcvendors' );
 				wc_add_notice( $message, 'success' );
