@@ -112,20 +112,12 @@ class WCV_Admin_Reports
 		?>
 
 		<form method="post" action="">
-			<p><label for="from"><?php _e( 'From:', 'wcvendors' ); ?></label> <input type="text"
-																							 name="start_date" id="from"
-																							 readonly="readonly"
-																							 value="<?php echo esc_attr( date( 'Y-m-d', $start_date ) ); ?>"/>
-				<label for="to"><?php _e( 'To:', 'wcvendors' ); ?></label> <input type="text" name="end_date"
-																						  id="to" readonly="readonly"
-																						  value="<?php echo esc_attr( date( 'Y-m-d', $end_date ) ); ?>"/>
-				<input type="submit" class="button" value="<?php _e( 'Show', 'wcvendors' ); ?>"/></p>
+			<p><label for="from"><?php _e( 'From:', 'wcvendors' ); ?></label> 
+			<input type="text" size="9" placeholder="yyyy-mm-dd" value="<?php echo esc_attr( date( 'Y-m-d', $start_date ) ); ?>" name="start_date" class="range_datepicker from" id="from" />
+			<label for="to"><?php _e( 'To:', 'wcvendors' ); ?></label> 
+			<input type="text" size="9" placeholder="yyyy-mm-dd" value="<?php echo esc_attr( date( 'Y-m-d', $end_date ) ); ?>" name="end_date" class="range_datepicker to" id="to" />
+			<input type="submit" class="button" value="<?php _e( 'Show', 'wcvendors' ); ?>"/></p>
 		</form>
-		<script type="text/javascript">
-			jQuery(function () {
-				<?php woocommerce_datepicker_js(); ?>
-			});
-		</script>
 
 		<div id="poststuff" class="woocommerce-reports-wrap">
 			<div class="woocommerce-reports-sidebar">
@@ -160,8 +152,9 @@ class WCV_Admin_Reports
 						<?php
 						$commission = $wpdb->get_results( "
 								SELECT * FROM {$wpdb->prefix}pv_commission
+								WHERE     time >= '" . $after . "'
+								AND     time <= '" . $before . "'
 								ORDER BY time DESC
-								LIMIT 20
 							" );
 
 						if ( sizeof( $commission ) > 0 ) {
@@ -217,6 +210,8 @@ class WCV_Admin_Reports
 	{
 		global $start_date, $end_date, $woocommerce, $wpdb;
 
+		$latest_woo = version_compare( $woocommerce->version, '2.3', '>' ); 
+
 		$first_year   = $wpdb->get_var( "SELECT time FROM {$wpdb->prefix}pv_commission ORDER BY time ASC LIMIT 1;" );
 		$first_year   = $first_year ? date( 'Y', strtotime( $first_year ) ) : date( 'Y' );
 		$current_year = isset( $_POST[ 'show_year' ] ) ? $_POST[ 'show_year' ] : date( 'Y', current_time( 'timestamp' ) );
@@ -226,7 +221,8 @@ class WCV_Admin_Reports
 		$vendors         = apply_filters( 'pv_commission_vendors_list', $vendors );
 		$selected_vendor = !empty( $_POST[ 'show_vendor' ] ) ? (int) $_POST[ 'show_vendor' ] : false;
 		$products        = !empty( $_POST[ 'product_ids' ] ) ? (array) $_POST[ 'product_ids' ] : array();
-	?>
+
+		?>
 
 		<form method="post" action="" class="report_filters">
 			<label for="show_year"><?php _e( 'Show:', 'wcvendors' ); ?></label>
@@ -236,51 +232,49 @@ class WCV_Admin_Reports
 					printf( '<option value="%s" %s>%s</option>', $i, selected( $current_year, $i, false ), $i );
 				?>
 			</select>
-
-			<?php if ( $_GET[ 'report' ] == 2 ) { ?>
-
-				<select id="product_ids" name="product_ids[]" class="ajax_chosen_select_products" multiple="multiple"
+			<?php if ( $_GET[ 'report' ] == 2 ) { 
+					if ($latest_woo) { ?>		
+						<input type="hidden" class="wc-product-search" style="width:203px;" name="product_ids[]" data-placeholder="<?php _e( 'Search for a product&hellip;', 'woocommerce' ); ?>" data-action="woocommerce_json_search_products_and_variations" />
+			<?php } else { ?>
+						<select id="product_ids" name="product_ids[]" class="ajax_chosen_select_products" multiple="multiple"
 						data-placeholder="<?php _e( 'Year', 'wcvendors' ); ?>"
 						style="width: 400px;"></select>
-				<script type="text/javascript">
-					jQuery(function () {
+					<script type="text/javascript">
+						jQuery(function () {
 
-						// Ajax Chosen Product Selectors
-						jQuery("select.ajax_chosen_select_products").ajaxChosen({
-							method: 'GET',
-							url: '<?php echo admin_url('admin-ajax.php'); ?>',
-							dataType: 'json',
-							afterTypeDelay: 100,
-							data: {
-								action: 'woocommerce_json_search_products',
-								security: '<?php echo wp_create_nonce("search-products"); ?>'
-							}
-						}, function (data) {
+							// Ajax Chosen Product Selectors
+							jQuery("select.ajax_chosen_select_products").ajaxChosen({
+								method: 'GET',
+								url: '<?php echo admin_url('admin-ajax.php'); ?>',
+								dataType: 'json',
+								afterTypeDelay: 100,
+								data: {
+									action: 'woocommerce_json_search_products',
+									security: '<?php echo wp_create_nonce("search-products"); ?>'
+								}
+							}, function (data) {
 
-							var terms = {};
+								var terms = {};
 
-							jQuery.each(data, function (i, val) {
-								terms[i] = val;
+								jQuery.each(data, function (i, val) {
+									terms[i] = val;
+								});
+
+								return terms;
 							});
 
-							return terms;
 						});
+					</script>
 
-					});
-				</script>
-			<?php
-			} else {
-				?>
-
+				<?php }
+			} else { ?>
 				<select class="chosen_select" id="show_vendor" name="show_vendor" style="width: 300px;"
 						data-placeholder="<?php _e( 'Select a vendor&hellip;', 'wcvendors' ); ?>">
 					<option></option>
 					<?php foreach ( $vendors as $key => $vendor ) printf( '<option value="%s" %s>%s</option>', $vendor->ID, selected( $selected_vendor, $vendor->ID, false ), $vendor->display_name ); ?>
 				</select>
-
 			<?php } ?>
-
-			<input type="submit" class="button" value="<?php _e( 'Show', 'wcvendors' ); ?>"/></p>
+			<input type="submit" class="button" value="<?php _e( 'Show', 'wcvendors' ); ?>"/>
 		</form>
 
 		<?php
@@ -398,11 +392,6 @@ class WCV_Admin_Reports
 			</div>
 
 		<?php } ?>
-		<script type="text/javascript">
-			jQuery(function () {
-				jQuery("select.chosen_select").chosen({allow_single_deselect: 'true'});
-			});
-		</script>
 	<?php
 
 	}
