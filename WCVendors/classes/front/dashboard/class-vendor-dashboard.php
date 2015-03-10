@@ -34,23 +34,15 @@ class WCV_Vendor_Dashboard
 			$order_id = $_GET['wc_pv_mark_shipped'];
 			$shippers = (array) get_post_meta( $order_id, 'wc_pv_shipped', true );
 
-			if( in_array($user_id, $shippers)) {
-				foreach ($shippers as $key => $value) {
-					if ( $value == $user_id ) {
-						unset($shippers[$key]);
-+						do_action('wcvendors_vendor_unship', $order_id, $user_id);
-						wc_add_notice( __( 'Order unmarked shipped.  <br><br>Caution:  Clicking Reload in your browser will mark the order as shipped and email the buyer again, potentially spamming them.', 'wcvendors' ), 'success');
-						break;
-					}
-				}
-			} else {
+			// If not in the shippers array mark as shipped otherwise do nothing. 
+			if( !in_array($user_id, $shippers)) {
 				$shippers[] = $user_id;
 				$mails = $woocommerce->mailer()->get_emails();
 				if ( !empty( $mails ) ) {
 					$mails[ 'WC_Email_Notify_Shipped' ]->trigger( $order_id, $user_id );
 				}
-+				do_action('wcvendors_vendor_ship', $order_id, $user_id);
-				wc_add_notice( __( 'Order marked shipped.  <br><br>Caution:  Clicking Reload in your browser will unmark the order as shipped.', 'wcvendors' ), 'success' );
+				do_action('wcvendors_vendor_ship', $order_id, $user_id);
+				wc_add_notice( __( 'Order marked shipped.', 'wcvendors' ), 'success' );
 			}
 
 			update_post_meta( $order_id, 'wc_pv_shipped', $shippers );
@@ -168,6 +160,7 @@ class WCV_Vendor_Dashboard
 		$settings_page   = get_permalink( WC_Vendors::$pv_options->get_option( 'shop_settings_page' ) );
 		$can_submit      = WC_Vendors::$pv_options->get_option( 'can_submit_products' );
 		if ( $can_submit ) $submit_link = admin_url( 'post-new.php?post_type=product' );
+		if ( $can_submit ) $edit_link = admin_url( 'edit.php?post_type=product' );
 
 		if ( !$this->can_view_vendor_page() ) {
 			return false;
@@ -213,6 +206,7 @@ class WCV_Vendor_Dashboard
 													'settings_page' => $settings_page,
 													'can_submit'    => $can_submit,
 													'submit_link'   => $submit_link,
+													'edit_link'		=> $edit_link,
 											   ), 'wc-product-vendor/dashboard/', wcv_plugin_dir . 'views/dashboard/' );
 
 		if ( $can_view_sales = WC_Vendors::$pv_options->get_option( 'can_view_frontend_reports' ) ) {

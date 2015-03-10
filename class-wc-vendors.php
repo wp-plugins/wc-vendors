@@ -7,7 +7,7 @@
  * Author:              WC Vendors
  * Author URI:          http://wcvendors.com
  *
- * Version:             1.4.5
+ * Version:             1.5.0
  * Requires at least:   4.0.0
  * Tested up to:        4.1.1
  *
@@ -201,6 +201,7 @@ if ( is_woocommerce_activated() ) {
 		{
 			require_once wcv_plugin_dir . 'classes/gateways/PayPal_AdvPayments/paypal_ap.php';
 			require_once wcv_plugin_dir . 'classes/gateways/PayPal_Masspay/class-paypal-masspay.php';
+			require_once wcv_plugin_dir . 'classes/gateways/WCV_Gateway_Test/class-wcv-gateway-test.php';
 		}
 
 
