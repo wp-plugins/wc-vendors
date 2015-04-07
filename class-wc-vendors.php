@@ -7,12 +7,12 @@
  * Author:              WC Vendors
  * Author URI:          http://wcvendors.com
  *
- * Version:             1.5.0
+ * Version:             1.6.0
  * Requires at least:   4.0.0
  * Tested up to:        4.1.1
  *
  * Text Domain:         wcvendors
- * Domain Path:         /WCVendors/languages/
+ * Domain Path:         /languages/
  *
  * @category            Plugin
  * @copyright           Copyright © 2012 Matt Gates
@@ -25,7 +25,7 @@
 /**
  * Required functions
  */
-require_once trailingslashit( dirname( __FILE__ ) ) . 'WCVendors/classes/includes/class-functions.php';
+require_once trailingslashit( dirname( __FILE__ ) ) . 'classes/includes/class-functions.php';
 
 /**
  * Check if WooCommerce is active
@@ -33,8 +33,9 @@ require_once trailingslashit( dirname( __FILE__ ) ) . 'WCVendors/classes/include
 if ( is_woocommerce_activated() ) {
 
 	/* Define an absolute path to our plugin directory. */
-	if ( !defined( 'wcv_plugin_dir' ) ) define( 'wcv_plugin_dir', trailingslashit( dirname( __FILE__ ) ) . 'WCVendors/' );
-	if ( !defined( 'wcv_assets_url' ) ) define( 'wcv_assets_url', trailingslashit( plugins_url( 'WCVendors/assets', __FILE__ ) ) );
+	if ( !defined( 'wcv_plugin_dir' ) ) define( 'wcv_plugin_dir', trailingslashit( dirname( __FILE__ ) ) . '/' );
+	if ( !defined( 'wcv_assets_url' ) ) define( 'wcv_assets_url', trailingslashit( plugins_url( 'assets', __FILE__ ) ) );
+	if ( !defined( 'wcv_plugin_base' ) ) define( 'wcv_plugin_base', plugin_basename( __FILE__ ) );
 
 	$domain = 'wcvendors';
 
@@ -45,7 +46,7 @@ if ( is_woocommerce_activated() ) {
     //Place your custom translations into wp-content/languages/wc-vendors to be upgrade safe 
     load_textdomain($domain, WP_LANG_DIR.'/wc-vendors/'.$domain.'-'.$locale.'.mo');
 	
-	load_plugin_textdomain( 'wcvendors', false, dirname( plugin_basename( __FILE__ ) ) . '/WCVendors/languages/' );
+	load_plugin_textdomain( 'wcvendors', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 
 
 	/**
@@ -72,11 +73,17 @@ if ( is_woocommerce_activated() ) {
 			// Install & upgrade
 			add_action( 'admin_init', array( $this, 'check_install' ) );
 			add_action( 'admin_init', array( $this, 'maybe_flush_permalinks' ), 99 );
+			add_action( 'admin_init', array( $this, 'wcv_required_ignore_notices' ) );
+			add_action( 'admin_notices', array( $this, 'wcv_required_admin_notice') );
+
 
 			add_action( 'plugins_loaded', array( $this, 'load_settings' ) );
 			add_action( 'plugins_loaded', array( $this, 'include_gateways' ) );
 			add_action( 'plugins_loaded', array( $this, 'include_core' ) ); 
 			add_action( 'current_screen', array( $this, 'include_assets' ) ); 
+
+			add_filter( 'plugin_row_meta', array($this, 'plugin_row_meta'), 10, 2 );
+
 			
 			add_action( self::$id . '_options_updated', array( $this, 'option_updates' ), 10, 2 );
 
@@ -250,13 +257,82 @@ if ( is_woocommerce_activated() ) {
 
 
 		/**
+		 *  If the settings are updated and the vendor page link has changed update permalinks 
+		 *	@access public
 		 *
-		 */
+		*/
 		public function maybe_flush_permalinks()
 		{
 			if ( get_option( WC_Vendors::$id . '_flush_rules' ) ) {
 				flush_rewrite_rules();
 				update_option( WC_Vendors::$id . '_flush_rules', false );
+			}
+		}
+
+		/**
+		 *  Add links to plugin page to our external help site. 
+		 *	@param $links - links array from action 
+		 *	@param $file - file reference for this plugin 
+		 *	@access public 
+		 * 
+		 */
+		public static function plugin_row_meta( $links, $file ) {
+			if ( $file == wcv_plugin_base ) {
+
+				$row_meta = array(
+	                            'docs' 		=> '<a href="http://www.wcvendors.com/knowledgebase/" target="_blank">'.__( 'Documentation/KB', 'wcvendors' ).'</a>',
+	                            'help' 		=> '<a href="http://www.wcvendors.com/help/" target="_blank">'.__( 'Help Forums', 'wcvendors').'</a>',
+	                            'support' 	=> '<a href="http://www.wcvendors.com/contact-us/" target="_blank">'.__( 'Paid Support', 'wcvendors' ).'</a>'
+	                        );
+
+				return array_merge( $links, $row_meta );
+			}
+
+			return (array) $links;
+		}
+
+		/**
+		 *  Add admin notices to ensure users are saving the settings correctly 
+		 * 	@access public 
+		 * 
+		*/
+		public function wcv_required_admin_notice(){
+				global $current_user;
+
+			if ( current_user_can( 'manage_options' ) ) {
+	        		$current_user_id = $current_user->ID;
+
+					if ( WC_Vendors::$pv_options->get_option( 'vendor_shop_permalink' ) == null  && ! get_user_meta( $current_user_id, 'wcv_shop_ignore_notice' ) ) {
+						echo '<div class="updated">
+					   	<p>'.sprintf (__('WC Vendors requires the Vendor shop page value be set <a href="%s">click here to set it.</a> | <a href="%s">Hide Notice</a>','wcvendors'), 'admin.php?page=wc_prd_vendor' ,add_query_arg( 'wcv_shop_ignore_notice', '0' )).'</p>
+						</div>';
+					}
+
+					$general_tab = ( isset( $_GET['tab'] ) && 'general' == $_GET['tab'] ) || !isset( $_GET['tab'] ) ? true : false; 
+
+					if ( isset( $_GET['page'] ) && 'wc_prd_vendor' == $_GET['page'] && isset( $_GET[ 'settings-updated' ] ) && $general_tab == true && ! get_user_meta( $current_user_id, 'wcv_pl_ignore_notice' ) ) {
+						echo '<div class="updated">
+					   	<p>'.sprintf (__('You must save your permalinks once you have modified your vendor page. <a href="%s">click here to save</a>.  | <a href="%s">Hide Notice</a>','wcvendors'), 'options-permalink.php', add_query_arg( 'cron_mail_ignore', '0' )).'</p>
+						</div>';
+					}
+			}	
+		}			
+            
+		/**
+		 * Add user meta to remember ignore notices 
+		 * @access public
+         * 
+		 */
+		public function wcv_required_ignore_notices(){
+			global $current_user;
+    		$current_user_id = $current_user->ID;
+    		
+	        /* If user clicks to ignore the notice, add that to their user meta */
+	        if ( isset( $_GET[ 'wcv_shop_ignore_notice' ] ) && '0' == $_GET[ 'wcv_shop_ignore_notice' ] ) {
+	            add_user_meta( $current_user_id, 'wcv_shop_ignore_notice', 'true', true);
+	    	}				
+			if ( isset($_GET['wcv_pl_ignore_notice']) && '0' == $_GET['wcv_pl_ignore_notice'] ) {
+			 	add_user_meta( $current_user_id, 'wcv_pl_ignore_notice', 'true' , true);
 			}
 		}
 
