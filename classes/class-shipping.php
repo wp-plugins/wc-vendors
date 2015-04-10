@@ -63,7 +63,7 @@ class WCV_Shipping
 				// $shipping_due = WCV_Shipping::trs2_get_due( $order_id, $product[ 'product_id' ] );
 
 				// Per Product Shipping 2
-			} else if ( function_exists( 'woocommerce_per_product_shipping' ) && $method == 'per_product' ) {
+			} else if ( ( class_exists('WC_Shipping_Per_Product_Init') || function_exists( 'woocommerce_per_product_shipping' ) ) && $method == 'per_product' ) {
 				$shipping_due = WCV_Shipping::pps_get_due( $order_id, $product );
 
 				// Local Delivery
@@ -101,7 +101,7 @@ class WCV_Shipping
 	 *
 	 * @return unknown
 	 */
-	public function pps_get_due( $order_id, $product )
+	public static function pps_get_due( $order_id, $product )
 	{
 		global $woocommerce;
 
