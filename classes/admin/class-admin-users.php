@@ -35,13 +35,15 @@ class WCV_Admin_Users
 
 			add_filter( 'woocommerce_prevent_admin_access', array( $this, 'deny_admin_access' ) );
 
-
 			// WC > Product page fixes
 			add_action( 'load-post-new.php', array( $this, 'confirm_access_to_add' ) );
 			add_action( 'load-edit.php', array( $this, 'edit_nonvendors' ) );
 			add_filter( 'views_edit-product', array( $this, 'hide_nonvendor_links' ) );
 
-			add_action( 'pre_get_posts', array( $this, 'users_own_attachments' ) );
+			// Filter user attachments so they only see their own attachements 
+			add_action( 'ajax_query_attachments_args', array( $this, 'show_user_attachment_ajax' ) ); 
+		 	add_filter( 'parse_query', array( $this, 'show_user_attachment_page' ) );
+
 			add_action( 'admin_menu', array( $this, 'remove_menu_page' ), 99 );
 			add_action( 'add_meta_boxes', array( $this, 'remove_meta_boxes' ), 99 );
 			add_filter( 'product_type_selector', array( $this, 'filter_product_types' ), 99, 2 );
@@ -215,17 +217,37 @@ class WCV_Admin_Users
 	/**
 	 * Show attachments only belonging to vendor
 	 *
-	 * @param object $wp_query_obj
+	 * @param object $query
 	 */
-	function users_own_attachments( $wp_query_obj )
-	{
-		global $current_user, $pagenow;
+	function show_user_attachment_ajax ( $query ) { 
 
-		if ( $pagenow == 'upload.php' || ( $pagenow == 'admin-ajax.php' && !empty( $_POST[ 'action' ] ) && $_POST[ 'action' ] == 'query-attachments' ) ) {
-			$wp_query_obj->set( 'author', $current_user->ID );
-		}
+		 $user_id = get_current_user_id();
+		    if ( $user_id ) {
+		        $query['author'] = $user_id;
+		    }
+		    return $query;
 	}
 
+	/**
+	 * Show attachments only belonging to vendor
+	 *
+	 * @param object $query
+	 */
+	function show_user_attachment_page ( $query ) {
+
+		global $current_user, $pagenow;
+
+	    if ( !is_a( $current_user, 'WP_User') )
+	        return;
+
+	    if ( 'upload.php' != $pagenow && 'media-upload.php' != $pagenow)
+	        return;
+
+	    if ( !current_user_can('delete_pages') )
+	        $query->set('author', $current_user->ID );
+
+	    return;
+	}
 
 	/**
 	 * Allow vendors to access admin when disabled
