@@ -259,8 +259,8 @@ class WCV_Vendors
 	 */
 	public static function get_vendor_from_product( $product_id )
 	{
-		// Make sure we are returning an author for products only 
-		if ( 'product' === get_post_type( $product_id ) ) { 
+		// Make sure we are returning an author for products or product variations only 
+		if ( 'product' === get_post_type( $product_id ) || 'product_variation' === get_post_type( $product_id ) ) { 
 			$parent = get_post_ancestors( $product_id );
 			if ( $parent ) $product_id = $parent[ 0 ];
 
@@ -413,6 +413,26 @@ class WCV_Vendors
 		$vendor_product = WCV_Vendors::is_vendor_product( wcv_get_user_role($vendor_id) ); 
 		return $vendor_product ? true : false; 
 
+	}
+
+	public static function get_vendor_sold_by( $vendor_id ){ 
+
+		$vendor_display_name = WC_Vendors::$pv_options->get_option( 'vendor_display_name' ); 
+		$vendor =  get_userdata( $vendor_id ); 
+
+		switch ($vendor_display_name) {
+			case 'display_name':
+				$display_name = $vendor->display_name;
+				break;
+			case 'user_login': 
+				$display_name = $vendor->user_login;
+				break;
+			default:
+				$display_name = WCV_Vendors::get_vendor_shop_name( $vendor_id ); 
+				break;
+		}
+
+		return $display_name; 
 	}
 
 }
