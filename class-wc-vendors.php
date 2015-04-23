@@ -7,9 +7,9 @@
  * Author:              WC Vendors
  * Author URI:          http://wcvendors.com
  *
- * Version:             1.6.2
+ * Version:             1.7.0
  * Requires at least:   4.0.0
- * Tested up to:        4.1.1
+ * Tested up to:        4.2.0
  *
  * Text Domain:         wcvendors
  * Domain Path:         /languages/
@@ -83,8 +83,6 @@ if ( is_woocommerce_activated() ) {
 			add_action( 'current_screen', array( $this, 'include_assets' ) ); 
 
 			add_filter( 'plugin_row_meta', array($this, 'plugin_row_meta'), 10, 2 );
-
-			
 			add_action( self::$id . '_options_updated', array( $this, 'option_updates' ), 10, 2 );
 
 			// Start a PHP session, if not yet started
@@ -163,7 +161,9 @@ if ( is_woocommerce_activated() ) {
 			require_once wcv_plugin_dir . 'classes/admin/class-admin-reports.php';
 			require_once wcv_plugin_dir . 'classes/admin/class-admin-users.php';
 			require_once wcv_plugin_dir . 'classes/admin/class-admin-page.php';
+			require_once wcv_plugin_dir . 'classes/admin/class-vendor-admin-dashboard.php'; 
 			require_once wcv_plugin_dir . 'classes/includes/class-wcv-shortcodes.php';
+
 
 			if ( !function_exists( 'woocommerce_wp_text_input' ) && !is_admin() ) {
 				include_once(WC()->plugin_path() . '/includes/admin/wc-meta-box-functions.php');
@@ -179,6 +179,7 @@ if ( is_woocommerce_activated() ) {
 			new WCV_Product_Meta;
 			new WCV_Vendor_Reports;
 			new WCV_Admin_Setup;
+			new WCV_Vendor_Admin_Dashboard; 
 			new WCV_Admin_Reports;
 			new WCV_Vendor_Applicants;
 			new WCV_Admin_Users;
@@ -304,7 +305,7 @@ if ( is_woocommerce_activated() ) {
 
 					if ( WC_Vendors::$pv_options->get_option( 'vendor_shop_permalink' ) == null  && ! get_user_meta( $current_user_id, 'wcv_shop_ignore_notice' ) ) {
 						echo '<div class="updated">
-					   	<p>'.sprintf (__('WC Vendors requires the Vendor shop page value be set <a href="%s">click here to set it.</a> | <a href="%s">Hide Notice</a>','wcvendors'), 'admin.php?page=wc_prd_vendor' ,add_query_arg( 'wcv_shop_ignore_notice', '0' )).'</p>
+					   	<p>'.sprintf (__('WC Vendors requires the Vendor shop page value be set <a href="%s">click here to set it.</a> | <a href="%s">Hide Notice</a>','wcvendors'), 'admin.php?page=wc_prd_vendor', esc_url( add_query_arg( 'wcv_shop_ignore_notice', '0' ) ) ).'</p>
 						</div>';
 					}
 
@@ -312,7 +313,7 @@ if ( is_woocommerce_activated() ) {
 
 					if ( isset( $_GET['page'] ) && 'wc_prd_vendor' == $_GET['page'] && isset( $_GET[ 'settings-updated' ] ) && $general_tab == true && ! get_user_meta( $current_user_id, 'wcv_pl_ignore_notice' ) ) {
 						echo '<div class="updated">
-					   	<p>'.sprintf (__('You must save your permalinks once you have modified your vendor page. <a href="%s">click here to save</a>.  | <a href="%s">Hide Notice</a>','wcvendors'), 'options-permalink.php', add_query_arg( 'cron_mail_ignore', '0' )).'</p>
+					   	<p>'.sprintf (__('You must save your permalinks once you have modified your vendor page. <a href="%s">click here to save</a>.  | <a href="%s">Hide Notice</a>','wcvendors'), 'options-permalink.php', esc_url( add_query_arg( 'wcv_pl_ignore_notice', '0' ) ) ).'</p>
 						</div>';
 					}
 			}	
