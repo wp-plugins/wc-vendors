@@ -5,7 +5,7 @@ if ( !defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /**
  * New Order Email
  *
- * An email sent to the admin when a new order is received/paid for.
+ * An email sent to the vendor when a new order is received/paid for.
  *
  * @class    WC_Email_Notify_Vendor
  * @version  2.0.0
@@ -30,9 +30,9 @@ class WC_Email_Notify_Vendor extends WC_Email
 		$this->heading = __( 'New customer order', 'wcvendors' );
 		$this->subject = __( '[{blogname}] New customer order ({order_number}) - {order_date}', 'wcvendors' );
 
-		$this->template_html  = 'admin-new-order.php';
-		$this->template_plain = 'plain/admin-new-order.php';
-		$this->template_base  = dirname( dirname( dirname( dirname( __FILE__ ) ) ) ) . '/templates/emails/';
+		$this->template_html  = 'vendor-new-order.php';
+		$this->template_plain = 'vendor-new-order.php';
+		$this->template_base  = wcv_plugin_dir_path . '/templates/emails/';
 
 		// Triggers for this email
 		add_action( 'woocommerce_order_status_pending_to_processing_notification', array( $this, 'trigger' ) );
@@ -100,9 +100,14 @@ class WC_Email_Notify_Vendor extends WC_Email
 	function check_order_totals( $total_rows, $order )
 	{
 
-		$commission_label = apply_filters('wcv_notify_vendor_commission_label', __( 'Commission Subtotal:', 'wcvendors' ) ) ;
+		$commission_label 	= apply_filters('wcv_notify_vendor_commission_label', __( 'Commission Subtotal:', 'wcvendors' ) ) ;
 		$return[ 'cart_subtotal' ]            = $total_rows[ 'cart_subtotal' ];
 		$return[ 'cart_subtotal' ][ 'label' ] = $commission_label; 
+
+		if ( WC_Vendors::$pv_options->get_option( 'give_tax' ) ) {
+			$return['tax_subtotal'] = array( 'label' => '', 'value' => ''); 
+			$return[ 'tax_subtotal']['label'] = apply_filters('wcv_notify_vendor_tax_label', __( 'Tax Subtotal:', 'wcvendors' ) ) ;
+		} 
 
 		$dues = WCV_Vendors::get_vendor_dues_from_order( $order );
 
@@ -111,9 +116,16 @@ class WC_Email_Notify_Vendor extends WC_Email
 				if (!empty($return[ 'shipping' ]))	$return[ 'shipping' ]          = $total_rows[ 'shipping' ];
 				$return[ 'shipping' ]['label']   = __( 'Shipping Subtotal:', 'wcvendors' );
 				$return[ 'shipping' ][ 'value' ] = woocommerce_price( $due['shipping'] );
+				if ( WC_Vendors::$pv_options->get_option( 'give_tax' ) ) {
+					$return[ 'tax_subtotal']['value'] += $due['tax']; 
+				}
 				break;
 			}
 		}
+		// Format tax price 
+		if ( WC_Vendors::$pv_options->get_option( 'give_tax' ) ) { 
+			$return[ 'tax_subtotal']['value'] = woocommerce_price( $return[ 'tax_subtotal']['value'] ); 
+		} 
 
 		return $return;
 	}
@@ -172,7 +184,10 @@ class WC_Email_Notify_Vendor extends WC_Email
 
 					$items[ $key ][ 'line_subtotal' ] = $commission_due;
 					$items[ $key ][ 'line_total' ]    = $commission_due;
-					unset( $items[ $key ][ 'line_tax' ] );
+					// Don't display tax if give tax is not enabled. 
+					// if ( !WC_Vendors::$pv_options->get_option( 'give_tax' ) ) { 
+					// 	unset($items[ $key ][ 'line_tax' ]) ; 
+					// }
 				}
 			}
 
@@ -195,7 +210,7 @@ class WC_Email_Notify_Vendor extends WC_Email
 		wc_get_template( $this->template_html, array(
 															 'order'         => $this->object,
 															 'email_heading' => $this->get_heading()
-														), 'woocommerce/', $this->template_base );
+														), 'wc-vendors/emails', $this->template_base );
 
 		return ob_get_clean();
 	}
@@ -213,7 +228,7 @@ class WC_Email_Notify_Vendor extends WC_Email
 		wc_get_template( $this->template_plain, array(
 															  'order'         => $this->object,
 															  'email_heading' => $this->get_heading()
-														 ), 'woocommerce/', $this->template_base );
+														 ), 'wc-vendors/emails', $this->template_base );
 
 		return ob_get_clean();
 	}

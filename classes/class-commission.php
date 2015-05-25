@@ -198,7 +198,7 @@ class WCV_Commission
 	 *
 	 * @return int
 	 */
-	public function count_commission_by_order( $order_id )
+	public static function count_commission_by_order( $order_id )
 	{
 		global $wpdb;
 		$table_name = $wpdb->prefix . "pv_commission";
@@ -213,6 +213,36 @@ class WCV_Commission
 		$count = $wpdb->get_var( $wpdb->prepare( $query, 'reversed' ) );
 
 		return $count;
+	}
+
+	/**
+	 * Check the commission status for the order 
+	 *
+	 * @param array 	$order
+	 * @param string 	$status
+	 *
+	 * @return int
+	 */
+	public static function check_commission_status( $order, $status ) { 
+
+		global $wpdb; 
+
+		$table_name 	= $wpdb->prefix . "pv_commission";
+
+		$order_id 		= $order[ 'order_id' ]; 
+		$vendor_id 		= $order[ 'vendor_id' ]; 
+    	$product_id		= $order[ 'product_id' ]; 
+
+		$query = "SELECT count(order_id) AS order_count 
+				 	FROM {$table_name}
+				 	WHERE order_id = {$order_id} 
+				 	AND vendor_id = {$vendor_id} 
+				 	AND product_id = {$product_id}
+				 	AND status = %s
+		"; 
+
+		return $wpdb->get_var( $wpdb->prepare( $query , $status ) ); 
+
 	}
 
 
@@ -303,8 +333,14 @@ class WCV_Commission
 				'vendor_id'  => $order[ 'vendor_id' ],
 				'qty'        => $order[ 'qty' ],
 			);
-			$update = $wpdb->update( $table, $order, $where );
-			if ( !$update ) $insert = $wpdb->insert( $table, $order );
+			// Is the commission already paid? 
+			$count = WCV_Commission::check_commission_status( $order, 'paid' ); 
+
+			if ( $count == 0 ) { 
+				$update = $wpdb->update( $table, $order, $where );
+				if ( !$update ) $insert = $wpdb->insert( $table, $order );
+			}
+
 		}
 
 		do_action( 'wcv_commissions_inserted', $orders );
@@ -322,8 +358,9 @@ class WCV_Commission
 	 *
 	 * @return bool.
 	 */
-	public function set_order_commission_paid( $order_id, $column_ids = false )
+	public static function set_order_commission_paid( $order_id, $column_ids = false )
 	{
+		error_log('set commission paid called'); 
 		global $wpdb;
 
 		$table_name = $wpdb->prefix . "pv_commission";
@@ -332,6 +369,32 @@ class WCV_Commission
 			$order_id = implode( ',', $order_id );
 
 		$query  = "UPDATE `{$table_name}` SET `status` = 'paid' WHERE order_id IN ($order_id)";
+		$result = $wpdb->query( $query );
+
+		return $result;
+	}
+
+
+	/**
+	 * Set commission to 'paid' for an entire order
+	 *
+	 *
+	 * @access public
+	 *
+	 * @param mixed   $order_id   An array of Order IDs or an int.
+	 *
+	 * @return bool.
+	 */
+	public static function set_vendor_commission_paid( $vendors )
+	{
+		global $wpdb;
+
+		$table_name = $wpdb->prefix . "pv_commission";
+
+		if ( is_array( $vendors ) )
+			$vendors = implode( ',', $vendors );
+
+		$query  = "UPDATE `{$table_name}` SET `status` = 'paid' WHERE vendor_id IN ($vendors)";
 		$result = $wpdb->query( $query );
 
 		return $result;

@@ -284,10 +284,13 @@ class WCV_Vendors
 	 */
 	public static function is_vendor( $user_id )
 	{
-		$user = get_userdata( $user_id );
-
-		$role      = !empty( $user->roles ) ? array_shift( $user->roles ) : false;
-		$is_vendor = $role == 'vendor';
+		$user = get_userdata( $user_id ); 
+		
+		if (is_object($user)) { 
+			$is_vendor = is_array( $user->roles ) ? in_array( 'vendor', $user->roles ) : false;
+		} else { 
+			$is_vendor = false; 
+		}
 
 		return apply_filters( 'pv_is_vendor', $is_vendor, $user_id );
 	}
@@ -428,6 +431,10 @@ class WCV_Vendors
 			case 'user_login': 
 				$display_name = $vendor->user_login;
 				break;
+			case 'user_email': 
+				$display_name = $vendor->user_email;
+				break;
+
 			default:
 				$display_name = WCV_Vendors::get_vendor_shop_name( $vendor_id ); 
 				break;
