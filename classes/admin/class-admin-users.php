@@ -57,7 +57,10 @@ class WCV_Admin_Users
 			if ( isset( $product_misc['featured'] ) ) { 
 				add_filter( 'manage_product_posts_columns', array($this, 'manage_product_columns'), 99);
 			}
-			
+			// WC > Product Hide duplicate 
+			if ( isset( $product_misc['duplicate'] ) ) { 
+				add_filter( 'post_row_actions', array( $this, 'remove_dupe_link' ), 99, 2 );
+			}
 		}
 
 	}
@@ -125,14 +128,28 @@ class WCV_Admin_Users
 	 */
 	public function show_pending_number( $menu )
 	{
-		$num_posts = wp_count_posts( 'product', 'readable' );
+		 
+		$args = array( 
+			'post_type' 		=> 'product', 
+			'author'			=> get_current_user_id(), 
+			'post_status'		=> 'pending'
+		); 	
 
-		$pending_count = !empty( $num_posts->pending ) ? $num_posts->pending : 0;
+		if (!WCV_Vendors::is_vendor( get_current_user_id() ) ) unset( $args['author'] );
+
+		$pending_posts = get_posts( $args ); 
+		
+		$pending_count = is_array( $pending_posts ) ? count( $pending_posts ) : 0;
+
 		$menu_str      = 'edit.php?post_type=product';
 
 		foreach ( $menu as $menu_key => $menu_data ) {
+			
 			if ( $menu_str != $menu_data[ 2 ] ) continue;
-			$menu[ $menu_key ][ 0 ] .= " <span class='update-plugins count-$pending_count'><span class='plugin-count'>" . number_format_i18n( $pending_count ) . '</span></span>';
+
+			if ($pending_count > 0 ) { 
+				$menu[ $menu_key ][ 0 ] .= " <span class='update-plugins counting-$pending_count'><span class='plugin-count'>" . number_format_i18n( $pending_count ) . '</span></span>';
+			}
 		}
 
 		return $menu;
@@ -299,7 +316,9 @@ class WCV_Admin_Users
 	 */
 	public function hide_nonvendor_products( $query_vars )
 	{
-		$query_vars[ 'author' ] = get_current_user_id();
+		if (array_key_exists('post_type', $query_vars) && ($query_vars['post_type'] == 'product')) {
+			$query_vars[ 'author' ] = get_current_user_id();
+		}
 
 		return $query_vars;
 	}
@@ -355,6 +374,8 @@ class WCV_Admin_Users
 		update_user_meta( $vendor_id, 'pv_custom_commission_rate', $_POST[ 'pv_custom_commission_rate' ] );
 		update_user_meta( $vendor_id, 'pv_shop_description', $_POST[ 'pv_shop_description' ] );
 		update_user_meta( $vendor_id, 'pv_seller_info', $_POST[ 'pv_seller_info' ] );
+		update_user_meta( $vendor_id, 'wcv_give_vendor_tax', isset( $_POST[ 'wcv_give_vendor_tax' ] ) ); 
+		update_user_meta( $vendor_id, 'wcv_give_vendor_shipping', isset( $_POST[ 'wcv_give_vendor_shipping' ] ) ); 
 
 		do_action( 'wcvendors_update_admin_user', $vendor_id );
 	}
@@ -406,6 +427,28 @@ class WCV_Admin_Users
 			</tr>
 			<?php do_action( 'wcvendors_admin_after_commission_due', $user ); ?>
 			<tr>
+				<th><label for="wcv_give_vendor_tax"><?php _e( 'Give Tax', 'wcvendors' ); ?> (%)</label></th>
+				<td>
+					<label for="wcv_give_vendor_tax">
+						<input name="wcv_give_vendor_tax" type="checkbox"
+							   id="wcv_give_vendor_tax" <?php checked( true, get_user_meta( $user->ID, 'wcv_give_vendor_tax', true ), $echo = true ) ?>/>
+						<?php _e( 'Tax override for vendor', 'wcvendors' ); ?>
+					</label>
+				</td>
+			</tr>
+			<?php do_action( 'wcvendors_admin_after_give_tax', $user ); ?>
+			<tr>
+				<th><label for="wcv_give_vendor_shipping"><?php _e( 'Give Shipping', 'wcvendors' ); ?> (%)</label></th>
+				<td>
+					<label for="wcv_give_vendor_shipping">
+						<input name="wcv_give_vendor_shipping" type="checkbox"
+							   id="wcv_give_vendor_shipping" <?php checked( true, get_user_meta( $user->ID, 'wcv_give_vendor_shipping', true ), $echo = true ) ?>/>
+						<?php _e( 'Shipping override for vendor', 'wcvendors' ); ?>
+					</label>
+				</td>
+			</tr>
+			<?php do_action( 'wcvendors_admin_after_give_shipping', $user ); ?>
+			<tr>
 				<th><label for="pv_seller_info"><?php _e( 'Seller info', 'wcvendors' ); ?></label></th>
 				<td><?php wp_editor( get_user_meta( $user->ID, 'pv_seller_info', true ), 'pv_seller_info' ); ?></td>
 			</tr>
@@ -429,5 +472,16 @@ class WCV_Admin_Users
 		unset($columns['featured']);
 		return $columns;
 	}
+
+
+	/**
+	 *     Hide the duplicate product link by removing it from the row actions 
+	 */
+	public function remove_dupe_link( $actions, $post ) { 
+		error_log(print_r($actions, true)); 
+		unset($actions['duplicate']); 
+		return $actions; 
+	}
+
 
 }

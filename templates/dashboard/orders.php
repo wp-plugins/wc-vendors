@@ -50,6 +50,7 @@ jQuery(function () {
 			$needs_shipping = false; 
 
 			$items = $order->get_items();
+
 			foreach ($items as $key => $value) {
 				if ( in_array($value['variation_id'], $valid_items) || in_array($value['product_id'], $valid_items)) {
 					$valid[] = $value;
@@ -72,13 +73,19 @@ jQuery(function () {
 				<td><?php echo $order->order_date; ?></td>
 				<td>
 				<a href="#" class="view-items" id="<?php echo $order->id; ?>"><?php _e('View items', 'wcvendors'); ?></a>
-				<?php if ($needs_shipping ) { ?> <a href="?wc_pv_mark_shipped=<?php echo $order->id; ?>" class="mark-shipped"><?php echo $shipped ? __('Unmark shipped', 'wcvendors') : __('Mark shipped', 'wcvendors'); ?></a> <?php } ?>
-				<?php if ( $providers ) : ?>  	 <a href="#" class="view-order-tracking" id="<?php echo $order->id; ?>"><?php _e( 'Tracking', 'wcvendors' ); ?></a><?php endif; ?></td>
+				<?php if ( $needs_shipping ) { ?> <a href="?wc_pv_mark_shipped=<?php echo $order->id; ?>" class="mark-shipped"><?php echo $shipped ? __('Unmark shipped', 'wcvendors') : __('Mark shipped', 'wcvendors'); ?></a> <?php } ?>
+				<?php if ( $providers && $needs_shipping && class_exists( 'WC_Shipment_Tracking' ) ) : ?><a href="#" class="view-order-tracking" id="<?php echo $order->id; ?>"><?php _e( 'Tracking', 'wcvendors' ); ?></a><?php endif; ?>
+
+				
+				</td>
 			</tr>
 
 			<tr id="view-items-<?php echo $order->id; ?>" style="display:none;">
 				<td colspan="5">
-					<?php foreach ($valid as $key => $item):
+					<?php 
+					$product_id = '';
+					foreach ($valid as $key => $item):
+						$product_id = $item['product_id']; 
 						$item_meta = new WC_Order_Item_Meta( $item[ 'item_meta' ] );
 						$item_meta = $item_meta->display( false, true ); ?>
 						<?php echo $item['qty'] . 'x ' . $item['name']; ?>
@@ -94,22 +101,25 @@ jQuery(function () {
 				</td>
 			</tr>
 
-			<?php if ( $providers ) : ?>
-			<tr id="view-tracking-<?php echo $order->id; ?>" style="display:none;"> 
-				<td colspan="5">
-					<div class="order-tracking">
-						<?php
-						wc_get_template( 'shipping-form.php', array(
-																			'order_id'       => $order->id,
-																			'product_id'     => $product_id,
-																			'providers'      => $providers,
-																			'provider_array' => $provider_array,
-																	   ), 'wc-vendors/orders/shipping/', wcv_plugin_dir . 'templates/orders/shipping/' );
-						?>
-					</div>
+			<?php if ( class_exists( 'WC_Shipment_Tracking' ) ) : ?>
+			
+				<?php if ( is_array( $providers ) ) : ?>
+				<tr id="view-tracking-<?php echo $order->id; ?>" style="display:none;"> 
+					<td colspan="5">
+						<div class="order-tracking">
+							<?php
+							wc_get_template( 'shipping-form.php', array(
+																				'order_id'       => $order->id,
+																				'product_id'     => $product_id,
+																				'providers'      => $providers,
+																		   ), 'wc-vendors/orders/shipping/', wcv_plugin_dir . 'templates/orders/shipping/' );
+							?>
+						</div>
 
-				</td>
-			</tr>
+					</td>
+				</tr>
+				<?php endif; ?>
+				
 			<?php endif; ?>
 
 		<?php endforeach; ?>
