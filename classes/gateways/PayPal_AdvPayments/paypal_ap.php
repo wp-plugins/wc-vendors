@@ -296,19 +296,34 @@ class WC_PaypalAP extends WC_Payment_Gateway
 	 */
 	private function get_receivers( $order )
 	{
-		$receivers = WCV_Vendors::get_vendor_dues_from_order( $order );
+		$response = array(); 
 
-		$i        = 0;
-		$response = array();
-		foreach ( $receivers as $author => $values ) {
-			if ( empty( $values[ 'total' ] ) ) continue;
+		// Process the payment and split as required  
+		if ( $this->instapay ) { 
 
-			$response[ $i ]            = new Receiver();
-			$response[ $i ]->email     = $values[ 'vendor_id' ] == 1 ? $this->main_paypal : WCV_Vendors::get_vendor_paypal( $values[ 'vendor_id' ] );
-			$response[ $i ]->amount    = round( $values[ 'total' ], 2);
-			$response[ $i ]->primary   = false;
-			$response[ $i ]->invoiceId = $order->id;
-			$i++;
+			$receivers = WCV_Vendors::get_vendor_dues_from_order( $order );
+			$i        = 0;
+			
+			foreach ( $receivers as $author => $values ) {
+				if ( empty( $values[ 'total' ] ) ) continue;
+
+				$response[ $i ]            = new Receiver();
+				$response[ $i ]->email     = $values[ 'vendor_id' ] == 1 ? $this->main_paypal : WCV_Vendors::get_vendor_paypal( $values[ 'vendor_id' ] );
+				$response[ $i ]->amount    = round( $values[ 'total' ], 2);
+				$response[ $i ]->primary   = false;
+				$response[ $i ]->invoiceId = $order->id;
+				$i++;
+			}
+
+		} else { 
+			// Send all monies to the site admin
+			$single_receiver            = new Receiver();
+			$single_receiver->email     = $this->main_paypal;
+			$single_receiver->amount    = $order->get_total(); 
+			$single_receiver->primary   = false;
+			$single_receiver->invoiceId = $order->id;
+			// Set a single reciever for the transaction 
+			$response[] = $single_receiver; 
 		}
 
 		if ( $this->debug_me ) {

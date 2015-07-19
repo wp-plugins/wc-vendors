@@ -7,7 +7,7 @@
  * Author:              WC Vendors
  * Author URI:          http://wcvendors.com
  *
- * Version:             1.7.5
+ * Version:             1.7.6
  * Requires at least:   4.0.0
  * Tested up to:        4.2.2
  *
@@ -38,17 +38,6 @@ if ( is_woocommerce_activated() ) {
 	if ( !defined( 'wcv_plugin_base' ) ) 		define( 'wcv_plugin_base', plugin_basename( __FILE__ ) );
 	if ( !defined( 'wcv_plugin_dir_path' ) )	define(  'wcv_plugin_dir_path', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 
-	$domain = 'wcvendors';
-
-    // The "plugin_locale" filter is also used in load_plugin_textdomain()
-    
-    $locale = apply_filters('plugin_locale', get_locale(), $domain);
-
-    //Place your custom translations into wp-content/languages/wc-vendors to be upgrade safe 
-    load_textdomain($domain, WP_LANG_DIR.'/wc-vendors/'.$domain.'-'.$locale.'.mo');
-	
-	load_plugin_textdomain( 'wcvendors', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
-
 
 	/**
 	 * Main Product Vendor class
@@ -70,6 +59,9 @@ if ( is_woocommerce_activated() ) {
 		public function __construct()
 		{
 			$this->title = __( 'WC Vendors', 'wcvendors' );
+
+			// Load text domain 
+			add_action( 'init', array( $this, 'load_il8n' ) );
 
 			// Install & upgrade
 			add_action( 'admin_init', array( $this, 'check_install' ) );
@@ -137,6 +129,21 @@ if ( is_woocommerce_activated() ) {
 				self::$pv_options = new SF_Settings_API( self::$id, $this->title, 'woocommerce', __FILE__ );
 				self::$pv_options->load_options( wcv_plugin_dir . 'classes/admin/settings/sf-options.php' );
 			}
+		}
+
+		public function load_il8n() { 
+
+			$domain = 'wcvendors';
+
+		    // The "plugin_locale" filter is also used in load_plugin_textdomain()
+		    
+		    $locale = apply_filters('plugin_locale', get_locale(), $domain);
+
+		    //Place your custom translations into wp-content/languages/wc-vendors to be upgrade safe 
+		    load_textdomain($domain, WP_LANG_DIR.'/wc-vendors/'.$domain.'-'.$locale.'.mo');
+			
+			load_plugin_textdomain( 'wcvendors', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+
 		}
 
 
@@ -241,11 +248,12 @@ if ( is_woocommerce_activated() ) {
 					'read_products'             => $can_edit || $can_add,
 					'upload_files'              => true,
 					'import'                    => true,
-					'view_woocommerce_reports'  => $can_view_reports,
+					'view_woocommerce_reports'  => false,
 				);
 
 				remove_role( 'vendor' );
-				add_role( 'vendor', 'Vendor', $args );
+				
+				add_role( 'vendor', __('Vendor', 'wcvendors'), $args );
 			} // Update permalinks
 			else if ( $tabname == sanitize_title(__( 'General', 'wcvendors' ) )) {
 				$old_permalink = WC_Vendors::$pv_options->get_option( 'vendor_shop_permalink' );
