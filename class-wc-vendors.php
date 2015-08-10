@@ -7,9 +7,9 @@
  * Author:              WC Vendors
  * Author URI:          http://wcvendors.com
  *
- * Version:             1.7.6
+ * Version:             1.7.7
  * Requires at least:   4.0.0
- * Tested up to:        4.2.2
+ * Tested up to:        4.3.0
  *
  * Text Domain:         wcvendors
  * Domain Path:         /languages/

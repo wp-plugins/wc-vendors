@@ -588,15 +588,15 @@ class WCV_Shortcodes {
 	  		'number' 			=> $per_page, 
 	  	);
 
-	  	if ($show_products == 'yes' ) $vendor_total_args['query_id'] = 'vendors_with_products'; 
+	  	if ($show_products == 'yes' ) $vendor_paged_args['query_id'] = 'vendors_with_products'; 
 
 	  	$vendor_paged_query = New WP_User_Query( $vendor_paged_args ); 
 	  	$paged_vendors = $vendor_paged_query->get_results(); 
 
 	  	// Pagination calcs 
-		$total_vendors = count($all_vendors);  
+		$total_vendors = count( $all_vendors );  
 		$total_vendors_paged = count($paged_vendors);  
-		$total_pages = intval($total_vendors / $per_page);
+		$total_pages = intval( $total_vendors / $per_page ) + ( $total_vendors % $per_page );
 	    
 	   	ob_start();
 
@@ -616,7 +616,7 @@ class WCV_Shortcodes {
 			$html .= '<div class="wcv_pagination">';  
 			  $current_page = max( 1, get_query_var('paged') );  
 			  $html .= paginate_links( 	array(  
-			        'base' => get_pagenum_link(1) . '%_%',  
+			        'base' => get_pagenum_link( ) . '%_%',  
 			        'format' => 'page/%#%/',  
 			        'current' => $current_page,  
 			        'total' => $total_pages,  
