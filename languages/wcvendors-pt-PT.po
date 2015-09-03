@@ -3,12 +3,12 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WC Vendors\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-24 09:29+1000\n"
-"POT-Revision-Date: Sun May 24 2015 08:31:40 GMT-0300 (BRT)\n"
+"POT-Creation-Date: 2015-09-04 09:29+1000\n"
+"POT-Revision-Date: Fri Set 04 2015 08:31:40 GMT-0300 (BRT)\n"
 "PO-Revision-Date: 2015-05-24 16:48-0300\n"
 "Last-Translator: \n"
 "Language-Team: WC Vendors <support@wcvendors.com>\n"
-"Language: pt_BR\n"
+"Language: pt_PT\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -34,12 +34,12 @@ msgid ""
 "<b>WC Vendors is disabled</b>. WC Vendors requires a minimum of WooCommerce "
 "v2.2.0."
 msgstr ""
-"<b>WC Vendors está desativado.</b>.  WC Vendors requer no mínimo a versão do "
+"<b>WC Vendors está desactivado.</b>.  WC Vendors requer no mínimo a versão do "
 "WooCommerce v2.2.0."
 
 #: ../class-wc-vendors.php:225 ../classes/admin/settings/sf-options.php:159
 msgid "Capabilities"
-msgstr "Recursos de usuário"
+msgstr "Recursos do utilizador"
 
 #: ../class-wc-vendors.php:249 ../classes/admin/settings/sf-options.php:4
 msgid "General"
@@ -55,7 +55,7 @@ msgstr "Fóruns de Ajuda"
 
 #: ../class-wc-vendors.php:286
 msgid "Paid Support"
-msgstr "Suporte pago"
+msgstr "Suporte Pago"
 
 #: ../class-wc-vendors.php:308
 #, php-format
@@ -72,8 +72,8 @@ msgid ""
 "You must save your permalinks once you have modified your vendor page. <a href="
 "\"%s\">click here to save</a>.  | <a href=\"%s\">Hide Notice</a>"
 msgstr ""
-"Você deve salvar os seus permalinks uma vez que você tenha modificado sua página "
-"fornecedor. <a href=\\”%s\\”>clique aqui para salvar</a> . | <a href=\\”%s"
+"Deve guardar os seus permalinks uma vez que tenha modificado sua página "
+"fornecedor. <a href=\\”%s\\”>clique aqui para guardar</a> . | <a href=\\”%s"
 "\\”>Ocultar Aviso</a>"
 
 #: ../classes/admin/class-admin-page.php:27
@@ -99,7 +99,7 @@ msgstr "Comissão"
 #: ../templates/emails/admin-new-order.php:22
 #: ../templates/emails/notify-vendor-shipped.php:22
 msgid "Product"
-msgstr "Produto"
+msgstr "Producto"
 
 #: ../classes/admin/class-admin-page.php:252
 #: ../classes/admin/class-vendor-admin-dashboard.php:255
@@ -141,7 +141,7 @@ msgstr "Marca de pago"
 
 #: ../classes/admin/class-admin-page.php:294
 msgid "Mark due"
-msgstr "Marca de à pagar"
+msgstr "Marca de dever"
 
 #: ../classes/admin/class-admin-page.php:295
 msgid "Mark reversed"
@@ -167,15 +167,15 @@ msgstr "Mostrar todas Condições"
 
 #: ../classes/admin/class-admin-page.php:412
 msgid "Commission marked paid."
-msgstr "Comissão paga"
+msgstr "Comissão marcada paga"
 
 #: ../classes/admin/class-admin-page.php:419
 msgid "Commission marked due."
-msgstr "Comissão à pagar"
+msgstr "Comissão marcada a pagar"
 
 #: ../classes/admin/class-admin-page.php:426
 msgid "Commission marked reversed."
-msgstr "Comissão revertida"
+msgstr "Comissão marcada revertida"
 
 #: ../classes/admin/class-admin-reports.php:44
 msgid "Overview"
@@ -225,7 +225,7 @@ msgstr "Total revertido na faixa de"
 
 #: ../classes/admin/class-admin-reports.php:149
 msgid "Recent Commission"
-msgstr "Comissão recente"
+msgstr "Comissão Recente"
 
 #: ../classes/admin/class-admin-reports.php:167
 #: ../classes/front/orders/class-orders.php:208
@@ -247,7 +247,7 @@ msgstr "D j M A \\a\\t h:ia"
 
 #: ../classes/admin/class-admin-reports.php:194
 msgid "No commission yet"
-msgstr "Sem comissão no momento"
+msgstr "Sem comissão de momento"
 
 #: ../classes/admin/class-admin-reports.php:228
 msgid "Show:"
@@ -259,7 +259,7 @@ msgstr "Procurar por um produto&hellip;"
 
 #: ../classes/admin/class-admin-reports.php:240
 msgid "Type in a product name to start searching..."
-msgstr "Digite o nome de um produto para iniciar a busca..."
+msgstr "Escreva o nome do produto a procurar..."
 
 #: ../classes/admin/class-admin-reports.php:272
 msgid "Select a vendor&hellip;"
@@ -310,7 +310,7 @@ msgstr "Taxa de comissão"
 #: ../classes/admin/class-admin-users.php:403
 #: ../classes/admin/class-product-meta.php:172
 msgid "Leave blank for default"
-msgstr "Deixe em branco para o padrão"
+msgstr "Deixe em branco como padrão"
 
 #: ../classes/admin/class-admin-users.php:409
 #: ../classes/admin/views/html-vendor-settings-page.php:30
@@ -326,7 +326,7 @@ msgstr "Descrição da Loja"
 #: ../classes/admin/class-vendor-admin-dashboard.php:19
 #: ../classes/class-install.php:166
 msgid "Shop Settings"
-msgstr "Ajustes da Loja"
+msgstr "Configuração da Loja"
 
 #: ../classes/admin/class-vendor-admin-dashboard.php:20
 #: ../classes/admin/class-vendor-admin-dashboard.php:142
@@ -349,7 +349,7 @@ msgstr "Este nome de loja já existe. O nome da sua loja deve ser único."
 #: ../classes/admin/settings/classes/sf-class-settings.php:366
 #: ../classes/front/dashboard/class-vendor-dashboard.php:128
 msgid "Settings saved."
-msgstr "Ajustes salvos"
+msgstr "configuração guardada"
 
 #: ../classes/admin/class-vendor-admin-dashboard.php:256
 msgid "Customer"
@@ -359,7 +359,7 @@ msgstr "Cliente"
 #: ../classes/admin/settings/sf-options.php:95
 #: ../classes/admin/settings/sf-options.php:221
 msgid "Products"
-msgstr "Produtos"
+msgstr "Productos"
 
 #: ../classes/admin/class-vendor-admin-dashboard.php:260
 msgid "Shipped"
@@ -423,11 +423,11 @@ msgstr "Pedido de Vendedor será aprovado, negado, ou pendente."
 
 #: ../classes/admin/emails/class-wc-approve-vendor.php:31
 msgid "Application {status}"
-msgstr "Pedido {condição}"
+msgstr "Pedido {status}"
 
 #: ../classes/admin/emails/class-wc-approve-vendor.php:32
 msgid "[{blogname}] Your vendor application has been {status}"
-msgstr "[{blogname}] Seu pedido de vendedor foi {condição}"
+msgstr "[{blogname}] Seu pedido de vendedor foi {status}"
 
 #: ../classes/admin/emails/class-wc-approve-vendor.php:123
 #: ../classes/admin/emails/class-wc-notify-admin.php:131
@@ -591,29 +591,29 @@ msgstr "[{blogname}] Novo pedido de cliente ({order_number}) - {order_date}"
 
 #: ../classes/admin/emails/class-wc-notify-vendor.php:103
 msgid "Commission Subtotal:"
-msgstr "Subtotal de comissão:"
+msgstr "Subtotal de Comissão:"
 
 #: ../classes/admin/emails/class-wc-notify-vendor.php:112
 msgid "Shipping Subtotal:"
-msgstr "Subtotal de envio:"
+msgstr "Subtotal de Envio:"
 
 #: ../classes/admin/settings/classes/sf-class-format-options.php:211
 #: ../classes/admin/settings/classes/sf-class-settings.php:776
 msgid "Select a page..."
-msgstr "Selecione um página…"
+msgstr "Selecione uma página…"
 
 #: ../classes/admin/settings/classes/sf-class-settings.php:153
 #: ../templates/dashboard/settings/settings.php:1
 msgid "Settings"
-msgstr "Ajustes"
+msgstr "Configurações"
 
 #: ../classes/admin/settings/classes/sf-class-settings.php:300
 msgid "Could not load settings at: "
-msgstr "Não puderam ser carregados os ajustes na:"
+msgstr "Não foram carregadas as configurações em:"
 
 #: ../classes/admin/settings/classes/sf-class-settings.php:300
 msgid "Error - WP Settings Framework"
-msgstr "Erro - WP Framework de ajustes"
+msgstr "Erro - WP Settings Framework "
 
 #: ../classes/admin/settings/classes/sf-class-settings.php:482
 #, php-format
@@ -640,16 +640,16 @@ msgid ""
 "commission rate already set, this value will be ignored for that product."
 msgstr ""
 "A taxa de padrão que você pagará a cada vendedor pela venda de um produto. Se um "
-"produto já tiver uma taxa de comissão já definida, este valor será ignorado para "
+"produto tiver uma taxa de comissão definida, este valor será ignorado para "
 "esse produto."
 
 #: ../classes/admin/settings/sf-options.php:20
 msgid "Registration"
-msgstr "Registro"
+msgstr "Registo"
 
 #: ../classes/admin/settings/sf-options.php:21
 msgid "Allow users or guests to apply to become a vendor"
-msgstr "Permitir usuários ou convidados a pedirem para se tornarem um vendedor"
+msgstr "Permitir que utilizadores ou convidados peçam para se tornarem vendedor"
 
 #: ../classes/admin/settings/sf-options.php:22
 msgid ""
@@ -657,10 +657,10 @@ msgid ""
 "the user would like to apply to be a vendor. Also, on the Vendor Dashboard, "
 "users can still apply to become a vendor even if this is disabled."
 msgstr ""
-"Isto mostrará uma caixa de seleção no formulário de inscrição da página Minha "
-"Conta perguntando se o usuário gostaria de se candidatar a ser um vendedor. Além "
-"disso, no Painel do Vendedor, os usuários ainda podem pedir para se tornar um "
-"vendedor, mesmo se esta caixa de seleção estiver desativado."
+"Isto mostra uma caixa de seleção no formulário de inscrição da página Minha "
+"Conta a pergunta se o utilizador gostará de se candidatar a ser vendedor. Também, "
+"no Painel do Vendedor, os utilizadores podem pedir para se tornarem um "
+"vendedor, mesmo se esta caixa de selecção estiver desactivado."
 
 #: ../classes/admin/settings/sf-options.php:29
 msgid "Approve vendor applications manually"
@@ -672,7 +672,7 @@ msgid ""
 "Otherwise, you must approve each manually."
 msgstr ""
 "Com esta opção desligada, todos os pedidos de vendedor serão automaticamente "
-"aceitos. Caso contrário, você deve aprovar cada um manualmente."
+"aceites. Caso contrário, você deve aprovar cada um manualmente."
 
 #: ../classes/admin/settings/sf-options.php:37
 msgid "Taxes"
@@ -680,12 +680,12 @@ msgstr "Impostos "
 
 #: ../classes/admin/settings/sf-options.php:38
 msgid "Give vendors any tax collected per-product"
-msgstr "Dê aos vendedores qualquer imposto cobrado por produto"
+msgstr "Dar aos vendedores qualquer taxa cobrada por produto"
 
 #: ../classes/admin/settings/sf-options.php:39
 msgid "The tax collected on a vendor's product will be given in its entirety"
 msgstr ""
-"O imposto cobrado sobre o produto de um vendedor será dado em sua totalidade"
+"O imposto cobrado sobre o produto de um vendedor será dado na sua totalidade"
 
 #: ../classes/admin/settings/sf-options.php:47
 msgid "Give vendors any shipping collected per-product"
@@ -694,11 +694,11 @@ msgstr "Dê aos vendedores qualquer taxa de envio recolhida por produto"
 #: ../classes/admin/settings/sf-options.php:48
 msgid "The shipping collected on a vendor's product will be given in its entirety"
 msgstr ""
-"A taxa de envio recolhida do produto de um fornecedor será dada em sua totalidade"
+"A taxa de envio recolhida do produto de um fornecedor será dada na sua totalidade"
 
 #: ../classes/admin/settings/sf-options.php:54
 msgid "Shop options"
-msgstr "Opções da Loja"
+msgstr "Opções da loja"
 
 #: ../classes/admin/settings/sf-options.php:57
 msgid "Shop HTML"
@@ -709,13 +709,13 @@ msgid ""
 "Enable HTML for a vendor's shop description by default.  You can enable or "
 "disable this per vendor by editing the vendors username."
 msgstr ""
-"Permitir HTML para descrição da loja de um vendedor por padrão. Você pode ativar "
-"ou desativar esta opção para cada vendedor editando o nome de usuário dos "
+"Por defeito permitir HTML para a descrição da loja de um vendedor. Você pode activar "
+"ou desactivar esta opção para cada vendedor editando o nome de utilizador dos "
 "vendedores."
 
 #: ../classes/admin/settings/sf-options.php:65
 msgid "Vendor shop page"
-msgstr "Página da loja do Vendedor"
+msgstr "Página da loja do vendedor"
 
 #: ../classes/admin/settings/sf-options.php:66
 msgid "Eg: <code>yoursite.com/[your_setting_here]/[vendor_name_here]</code>"
@@ -723,7 +723,7 @@ msgstr "Eg: <code>seusite.com/[your_setting_here]/[vendor_name_here]</code>"
 
 #: ../classes/admin/settings/sf-options.php:73
 msgid "Shop Headers"
-msgstr ""
+msgstr "Cabeçalho da Loja"
 
 #: ../classes/admin/settings/sf-options.php:74
 msgid "Enable vendor shop headers"
@@ -735,21 +735,21 @@ msgid ""
 "In order to customize the shop headers visit wcvendors.com and read the article "
 "in the Knowledgebase titled Changing the Vendor Templates."
 msgstr ""
-"Isto irá substituir a saída do HTML com a descrição da loja nas páginas produto-"
+"Isto irá substituir a saída de HTML com a descrição da loja nas páginas produto-"
 "arquivo. A fim de personalizar os cabeçalhos das lojas visite o wcvendors.com e "
 "leia o artigo intitulado Changing the Vendor Templates."
 
 #: ../classes/admin/settings/sf-options.php:82
 msgid "Vendor Display Name"
-msgstr "Nome de exibição do Vendedor"
+msgstr "Nome de Exibição do Vendedor"
 
 #: ../classes/admin/settings/sf-options.php:83
 msgid "Select what will be displayed for the sold by text throughout the store."
-msgstr "Selecione o que será exibido no texto de vendido por em toda loja."
+msgstr "Selecione o que será exibido como vendido no texto da loja toda."
 
 #: ../classes/admin/settings/sf-options.php:87
 msgid "Display Name"
-msgstr "Nome de exibição"
+msgstr "Nome de Exibição"
 
 #: ../classes/admin/settings/sf-options.php:88
 #: ../classes/admin/views/html-vendor-settings-page.php:22
@@ -759,7 +759,7 @@ msgstr "Nome da Loja"
 
 #: ../classes/admin/settings/sf-options.php:89
 msgid "User Login"
-msgstr "Login do Usuário"
+msgstr "Login Utilizador"
 
 #: ../classes/admin/settings/sf-options.php:96
 msgid "Product Add Page"
@@ -768,7 +768,7 @@ msgstr "Página Adicionar Produto"
 #: ../classes/admin/settings/sf-options.php:96
 msgid "Configure what to hide from all vendors when adding a product"
 msgstr ""
-"Configurar o que estará oculto de todos os vendedores quando adicionarem um "
+"Configurar o que fica oculto de todos os vendedores quando adicionar um "
 "produto"
 
 #: ../classes/admin/settings/sf-options.php:99
@@ -779,8 +779,7 @@ msgstr "Painel do lado esquerdo"
 msgid ""
 "CHECKING these boxes will HIDE these areas of the add product page for vendors"
 msgstr ""
-"MARCANDO estas caixas irá OCULTAR do vendedor estas áreas para na página "
-"Adicionar Produto"
+"MARCANDO estas caixas vai OCULTAR estas áreas da página adicionar producto dos vendedores"
 
 #: ../classes/admin/settings/sf-options.php:114
 msgid "Types"
@@ -788,15 +787,15 @@ msgstr "Tipos"
 
 #: ../classes/admin/settings/sf-options.php:115
 msgid "CHECKING these boxes will HIDE these product types from the vendor"
-msgstr "MARCANDO estas caixas irá OCULTAR do vendedor estes tipos de produtos"
+msgstr "MARCANDO estas caixas irá OCULTAR estes tipos de produtos do vendedor"
 
 #: ../classes/admin/settings/sf-options.php:128
 msgid "Type options"
-msgstr "Opções de tipo"
+msgstr "Opções tipo"
 
 #: ../classes/admin/settings/sf-options.php:129
 msgid "CHECKING these boxes will HIDE these product options from the vendor"
-msgstr "MARCANDO estas caixas irá OCULTAR do vendedor estas opções de tipo"
+msgstr "MARCANDO estas caixas irá OCULTAR estas opções de producto do vendedor"
 
 #: ../classes/admin/settings/sf-options.php:140
 msgid "Miscellaneous"
